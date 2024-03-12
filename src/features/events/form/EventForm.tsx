@@ -1,12 +1,18 @@
 import { ChangeEvent, useState } from "react";
 import { Button, Form, Header, Segment } from "semantic-ui-react";
+import { AppEvent } from "../../../app/types/event";
+import { createId } from "@paralleldrive/cuid2";
 
 type Props={
     setFormOpen: (value: boolean) => void;
+    addEvent: (event:AppEvent) => void;
+    selectedEvent : AppEvent | null;
+    updateEvent: (event: AppEvent) => void;
 }
 
-export default function EventForm({setFormOpen}:Props) {
-    const  initialValues = {
+export default function EventForm({setFormOpen, addEvent,selectedEvent, updateEvent}:Props) {
+    //Double ?? serves to imply: If selectedEvent is null then I use the next things:
+    const  initialValues = selectedEvent ?? {
         title: '',
         category:'',
         description:'',
@@ -17,7 +23,10 @@ export default function EventForm({setFormOpen}:Props) {
     const [values, setValues] = useState(initialValues);
 
     function onSubmit(){
-        console.log(values);
+        selectedEvent
+         ? updateEvent({...selectedEvent, ...values})
+         : addEvent({...values, id:createId(), hostedBy:'bob', attendees:[], hostPhotoURL:''});
+        setFormOpen(false);
     }
     function handleInputChange(e: ChangeEvent<HTMLInputElement>){
         const {name,value} = e.target;
@@ -26,7 +35,7 @@ export default function EventForm({setFormOpen}:Props) {
     }
   return (
     <Segment clearing>
-        <Header content>
+        <Header content={selectedEvent? 'Update Event' : 'Create Event'}> //There is an event? If yes then Update, if not then Create
             <Form onSubmit={onSubmit}>
                 <Form.Field>
                     <input 
@@ -65,13 +74,13 @@ export default function EventForm({setFormOpen}:Props) {
                     onChange={e => handleInputChange(e)}  />
                 </Form.Field>
                 <Form.Field>
-                    <input type="text"
+                    <input type="date"
                      placeholder="Date"
                      value={values.date}
                     name= 'date'
                     onChange={e => handleInputChange(e)}  />
                 </Form.Field>
-                <Button  floated="right" positive content='Submit'/>
+                <Button  floated="right" positive content='Submit' onClick={()=>onSubmit()}/>
                 <Button onClick={()=>setFormOpen(false)} style={{marginRight: 'submit'}} floated="right" content='Cancel'/>
 
             </Form>
