@@ -1,18 +1,10 @@
 import { ChangeEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Form, Header, Segment } from "semantic-ui-react";
-import { AppEvent } from "../../../app/types/event";
-import { createId } from "@paralleldrive/cuid2";
 
-type Props={
-    setFormOpen: (value: boolean) => void;
-    addEvent: (event:AppEvent) => void;
-    selectedEvent : AppEvent | null;
-    updateEvent: (event: AppEvent) => void;
-}
-
-export default function EventForm({setFormOpen, addEvent,selectedEvent, updateEvent}:Props) {
+export default function EventForm() {
     //Double ?? serves to imply: If selectedEvent is null then I use the next things:
-    const  initialValues = selectedEvent ?? {
+    const  initialValues =  {
         title: '',
         category:'',
         description:'',
@@ -23,10 +15,11 @@ export default function EventForm({setFormOpen, addEvent,selectedEvent, updateEv
     const [values, setValues] = useState(initialValues);
 
     function onSubmit(){
-        selectedEvent
+        console.log(values);
+        /*selectedEvent
          ? updateEvent({...selectedEvent, ...values})
          : addEvent({...values, id:createId(), hostedBy:'bob', attendees:[], hostPhotoURL:''});
-        setFormOpen(false);
+        setFormOpen(false);*/
     }
     function handleInputChange(e: ChangeEvent<HTMLInputElement>){
         const {name,value} = e.target;
@@ -35,7 +28,7 @@ export default function EventForm({setFormOpen, addEvent,selectedEvent, updateEv
     }
   return (
     <Segment clearing>
-        <Header content={selectedEvent? 'Update Event' : 'Create Event'}> //There is an event? If yes then Update, if not then Create
+        <Header content={'Create Event'}> //There is an event? If yes then Update, if not then Create
             <Form onSubmit={onSubmit}>
                 <Form.Field>
                     <input 
@@ -81,7 +74,7 @@ export default function EventForm({setFormOpen, addEvent,selectedEvent, updateEv
                     onChange={e => handleInputChange(e)}  />
                 </Form.Field>
                 <Button  floated="right" positive content='Submit' onClick={()=>onSubmit()}/>
-                <Button onClick={()=>setFormOpen(false)} style={{marginRight: 'submit'}} floated="right" content='Cancel'/>
+                <Button as={Link} to='/events' floated="right" content='Cancel'/>
 
             </Form>
         </Header>
