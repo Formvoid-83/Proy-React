@@ -1,17 +1,16 @@
 import { Grid, GridColumn } from "semantic-ui-react";
 import EventList from "./EventList";
-import { sampleData } from '../../../app/api/sampleData';
-import { useEffect, useState } from "react";
-import { AppEvent } from "../../../app/types/event";
+import { useAppSelector } from "../../../app/store/store";
 
 export default function EventDasboard() {
-  const [events, setEvents] = useState<AppEvent[]>([])
+  //const [events, setEvents] = useState<AppEvent[]>([])
+  const {events} = useAppSelector(state => state.events)
 
   //The | part is used to describe an alternative
 
-  useEffect(()=>{
+  /*useEffect(()=>{
     setEvents(sampleData);
-  },[])
+  },[])*/
 
   return (
     <Grid>
